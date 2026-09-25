@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>果序 · 时令水果志</title>
+  <meta name="description" content="水果有什么功效、什么时候最好吃——面向大学生的时令水果指南：宿舍存放、考试周补给、省钱挑果。" />
+  <meta name="theme-color" content="#f6f0e6" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="#top" aria-label="果序首页">
+        <span class="logo-mark" aria-hidden="true"></span>
+        <span class="logo-text">果序</span>
+        <span class="logo-sub">时令水果志</span>
+      </a>
+
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="打开菜单" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav" id="site-nav" aria-label="主导航">
+        <a href="#today">今日</a>
+        <a href="#elder">长辈</a>
+        <a href="#younger">青年</a>
+        <a href="#student">学生</a>
+        <a href="#seasons">时令</a>
+        <a href="#benefits">功效</a>
+        <a href="#sugar">控糖</a>
+        <a href="#compare">对比</a>
+        <a href="#atlas">图鉴</a>
+        <a href="#tips">挑选</a>
+      </nav>
+
+      <div class="header-actions">
+        <div class="font-switch" role="group" aria-label="字体大小">
+          <button type="button" data-font="md" class="is-active" title="标准字号">字</button>
+          <button type="button" data-font="lg" title="大号字体">大</button>
+          <button type="button" data-font="xl" title="特大字体">特</button>
+        </div>
+        <button class="btn-ghost" id="btn-favorites" type="button" title="查看收藏">
+          收藏 <span id="fav-count">0</span>
+        </button>
+        <button class="btn-primary sm" id="btn-random" type="button">随缘一颗</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Seasonal Fruit Almanac</p>
+          <h1>水果都有什么用，<br /><em>什么时候吃最好？</em></h1>
+          <p class="lead">
+            果序把常见水果的功效、最佳赏味季节、糖分提示和挑选保存方法收在一页里。
+            长辈、青年、学生都有对应场景；顶部还能放大字体，看得更清楚。
+          </p>
+          <div class="hero-actions">
+            <a class="btn-primary" href="#elder">长辈专区</a>
+            <a class="btn-secondary" href="#younger">青年专区</a>
+          </div>
+          <div class="hero-actions" style="margin-top:10px">
+            <a class="btn-secondary" href="#student">学生专区</a>
+            <a class="btn-secondary" href="#today">本月应季</a>
+          </div>
+          <dl class="hero-stats">
+            <div>
+              <dt id="stat-fruits">—</dt>
+              <dd>种水果</dd>
+            </div>
+            <div>
+              <dt id="stat-benefits">—</dt>
+              <dd>类功效标签</dd>
+            </div>
+            <div>
+              <dt id="stat-peak">—</dt>
+              <dd>本月应季</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="hero-visual">
+          <div class="orbit" id="orbit" aria-label="本月应季水果转盘">
+            <div class="orbit-ring"></div>
+            <div class="orbit-core">
+              <span class="core-month" id="core-month">9月</span>
+              <span class="core-label" id="core-label">本月应季</span>
+            </div>
+            <div class="orbit-fruits" id="orbit-fruits"></div>
+          </div>
+
+          <aside class="daily-card" id="daily-card">
+            <div class="daily-label">今日果</div>
+            <div class="daily-row">
+              <div class="daily-emoji" id="daily-emoji">🍊</div>
+              <div>
+                <h3 id="daily-name">橙子</h3>
+                <p id="daily-brief">冬季维 C 担当，酸甜多汁。</p>
+              </div>
+            </div>
+            <button class="btn-secondary sm" id="btn-daily" type="button">看看详情</button>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- TODAY -->
+    <section class="section today-section" id="today">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">This Month</p>
+            <h2>本月应季</h2>
+            <p class="section-desc">按自然月自动推荐。当季水果风味更足，营养也往往更完整。</p>
+          </div>
+          <div class="month-picker" id="month-picker" role="tablist" aria-label="选择月份"></div>
+        </div>
+        <div class="today-grid" id="today-grid"></div>
+      </div>
+    </section>
+
+    <!-- SEASONS -->
+    <section class="section seasons-section" id="seasons">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Seasons</p>
+            <h2>四季水果时令</h2>
+            <p class="section-desc">点一个季节，看看这个时节该吃什么。同一颗果子，有时跨季，也有最鲜的那几周。</p>
+          </div>
+        </div>
+
+        <div class="season-tabs" role="tablist" aria-label="季节">
+          <button class="season-tab is-active" data-season="spring" role="tab" aria-selected="true">
+            <span class="season-dot spring"></span>春
+          </button>
+          <button class="season-tab" data-season="summer" role="tab" aria-selected="false">
+            <span class="season-dot summer"></span>夏
+          </button>
+          <button class="season-tab" data-season="autumn" role="tab" aria-selected="false">
+            <span class="season-dot autumn"></span>秋
+          </button>
+          <button class="season-tab" data-season="winter" role="tab" aria-selected="false">
+            <span class="season-dot winter"></span>冬
+          </button>
+        </div>
+
+        <div class="season-panel" id="season-panel">
+          <div class="season-intro" id="season-intro"></div>
+          <div class="fruit-chips" id="season-fruits"></div>
+        </div>
+
+        <div class="year-map" aria-label="十二个月时令分布">
+          <div class="year-map-head">
+            <h3>十二个月 · 时令分布</h3>
+            <p>颜色越深代表当月应季水果越多。点月份可跳到推荐。</p>
+          </div>
+          <div class="year-grid" id="year-grid"></div>
+          <div class="year-legend">
+            <span><i class="lg spring"></i>春 3–5</span>
+            <span><i class="lg summer"></i>夏 6–8</span>
+            <span><i class="lg autumn"></i>秋 9–11</span>
+            <span><i class="lg winter"></i>冬 12–2</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BENEFITS -->
+    <section class="section benefits-section" id="benefits">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Benefits</p>
+            <h2>水果有什么功能</h2>
+            <p class="section-desc">从维生素 C、膳食纤维到护眼抗氧化——按你在意的功效筛选水果。功效描述参考常见营养常识，不能代替医嘱。</p>
+          </div>
+        </div>
+
+        <div class="benefit-filter" id="benefit-filter" role="group" aria-label="功效筛选"></div>
+        <div class="benefit-result-bar">
+          <p id="benefit-result-text">选择上方标签，查看对应水果。</p>
+          <button class="btn-ghost sm" id="btn-clear-benefit" type="button">清除筛选</button>
+        </div>
+        <div class="fruit-grid" id="benefit-grid"></div>
+      </div>
+    </section>
+
+    <!-- ATLAS -->
+    <section class="section atlas-section" id="atlas">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Fruit Atlas</p>
+            <h2>水果图鉴</h2>
+            <p class="section-desc">点开卡片，看功效、最佳季节、糖分提示、热量与挑选要点。点心形可收藏。</p>
+          </div>
+          <div class="search-wrap">
+            <input id="search-input" type="search" placeholder="搜索水果名、功效关键词…" aria-label="搜索水果" />
+          </div>
+        </div>
+        <div class="fruit-grid" id="atlas-grid"></div>
+        <p class="empty-state" id="atlas-empty" hidden>没有找到相关水果，换个关键词试试。</p>
+        <div class="favorites-panel" id="favorites-panel" hidden>
+          <h3>我的收藏</h3>
+          <div class="fruit-grid" id="favorites-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUGAR -->
+    <section class="section sugar-section" id="sugar">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Sugar-aware</p>
+            <h2>控糖专区</h2>
+            <p class="section-desc">给需要留意血糖、体重管理或想少吃游离糖的人。先选糖分档位，再看份量提示。不能代替医嘱。</p>
+          </div>
+        </div>
+
+        <div class="sugar-layout">
+          <aside class="sugar-guide">
+            <h3>控糖怎么吃水果</h3>
+            <ul class="guide-list">
+              <li><strong>优先完整水果</strong>，不要用果汁、果干、水果罐头糖水代替。</li>
+              <li><strong>控制单次份量</strong>：常见建议是每次约 100–200 克（约半碗到一小碗）。</li>
+              <li><strong>固定时间</strong>：放在两餐之间，比和正餐主食堆在一起更平稳。</li>
+              <li><strong>选低糖分档</strong>：优先「糖分偏低」，中等档位减半吃。</li>
+              <li><strong>监测个体反应</strong>：同样水果，不同人血糖反应可以不同。</li>
+              <li><strong>加工水果要避雷</strong>：果脯、蜜饯、水果风味酸奶、果汁饮料通常都更「甜」。</li>
+            </ul>
+            <div class="sugar-note">医学提示：糖尿病、妊娠期血糖异常、胰岛素抵抗等，请以医生 / 营养师的个性化方案为准。</div>
+          </aside>
+
+          <div class="sugar-main">
+            <div class="sugar-filter" id="sugar-filter" role="group" aria-label="糖分筛选"></div>
+            <p class="sugar-result" id="sugar-result"></p>
+            <div class="fruit-grid sugar-grid" id="sugar-grid"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPARE -->
+    <section class="section compare-section" id="compare">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Side by Side</p>
+            <h2>对比两颗水果</h2>
+            <p class="section-desc">选两种水果，并排看糖分、热量、季节与适用场景，买之前少纠结。</p>
+          </div>
+        </div>
+
+        <div class="compare-panel">
+          <div class="compare-pickers">
+            <label class="compare-picker">
+              <span>左边</span>
+              <select id="compare-a" aria-label="选择第一种水果"></select>
+            </label>
+            <button class="btn-ghost sm" id="compare-swap" type="button" title="交换">⇄ 交换</button>
+            <label class="compare-picker">
+              <span>右边</span>
+              <select id="compare-b" aria-label="选择第二种水果"></select>
+            </label>
+            <button class="btn-primary sm" id="compare-random" type="button">随机一对</button>
+          </div>
+
+          <div class="compare-table-wrap">
+            <table class="compare-table" id="compare-table">
+              <thead>
+                <tr>
+                  <th>对比项</th>
+                  <th id="compare-a-title">A</th>
+                  <th id="compare-b-title">B</th>
+                </tr>
+              </thead>
+              <tbody id="compare-body"></tbody>
+            </table>
+          </div>
+
+          <div class="compare-verdict" id="compare-verdict"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ELDER -->
+    <section class="section elder-section" id="elder">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">For Parents &amp; Elders</p>
+            <h2>长辈专区</h2>
+            <p class="section-desc">牙口、消化、三高、服药——挑软、少刺激、好入口的果子，吃得舒服最重要。不能代替医嘱。</p>
+          </div>
+        </div>
+
+        <div class="scenario-bar" id="elder-bar" role="group" aria-label="长辈场景"></div>
+        <p class="scenario-result" id="elder-result"></p>
+        <div class="fruit-grid student-grid" id="elder-grid"></div>
+
+        <div class="campus-tips elder-tips">
+          <article class="tip-card">
+            <span class="tip-num">牙口</span>
+            <h3>咬不动怎么办</h3>
+            <p>选香蕉、熟木瓜、猕猴桃、熟桃、火龙果、蒸梨。苹果、梨可以擦丝或炖软。坚果与脆果放后吃，或打成泥。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">服药</span>
+            <h3>吃药和吃果要错开</h3>
+            <p><strong>西柚（葡萄柚）</strong>可能影响部分降压药、他汀、抗过敏药等。服药期间先问医生或药师，不确定就先避开西柚。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">三高</span>
+            <h3>控糖与控量</h3>
+            <p>优先整果、少果汁果脯。一次约 100 克（小半碗），放两餐之间。香蕉、葡萄、荔枝、熟透柿子更甜，更要减半。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">消化</span>
+            <h3>胃弱怎么吃</h3>
+            <p>从少量常温果开始，避免空腹吃太酸（菠萝、柠檬、百香果）。有反酸、胃炎的，按医生建议调整；柿子、山楂别空腹大量吃。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">方便</span>
+            <h3>日常好操作</h3>
+            <p>小番茄、橘子、龙眼（干少些）、去皮即食盒、吸管杯装果泥，都省事。买小个头、预洗净小盒，减少处理负担。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">分量</span>
+            <h3>一天大概多少</h3>
+            <p>多数长辈每日 200 克左右即可（约一个中等苹果+一个橙子，或等量）。牙齿或血糖特殊者可再减，并分散吃。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- YOUNGER -->
+    <section class="section younger-section" id="younger">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Young Adults</p>
+            <h2>青年专区</h2>
+            <p class="section-desc">上班族、健身、控卡、想气色好一点——按你最近的状态挑，不必戒掉甜味，但要吃得聪明。</p>
+          </div>
+        </div>
+
+        <div class="scenario-bar" id="younger-bar" role="group" aria-label="青年场景"></div>
+        <p class="scenario-result" id="younger-result"></p>
+        <div class="fruit-grid student-grid" id="younger-grid"></div>
+
+        <div class="campus-tips">
+          <article class="tip-card">
+            <span class="tip-num">办公</span>
+            <h3>工位补给</h3>
+            <p>独立小包装、耐放、好分：橙子、苹果、小番茄、柚子瓣、蓝莓小盒。比奶茶和饼干更稳，也不容易一下吃太多。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">健身</span>
+            <h3>训练前后一口</h3>
+            <p>练前 30 分钟来半根香蕉或一小把葡萄；练后水果 + 蛋白质（酸奶/鸡胸/蛋）。增肌期别完全戒果，减脂期优先低糖整果。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">控卡</span>
+            <h3>减脂期怎么吃果</h3>
+            <p>用整果替换甜品和含糖饮料。草莓、蓝莓、柚子、杨梅、桃体积大热量低；榴莲、熟香蕉、枣干、果切蜜要节制。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">气色</span>
+            <h3>想脸色好一点</h3>
+            <p>关注维 C 与抗氧化：草莓、猕猴桃、橙子、蓝莓、石榴。比吃一堆保健品更实在；铁吸收也更需要维 C 搭配。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">熬夜</span>
+            <h3>夜宵别硬扛</h3>
+            <p>高糖夜宵会更困。需要提神或平复饥饿时，选小份柑橘、苹果、梨，或黄瓜番茄（蔬果通用）。能早睡还是早睡。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">分享</span>
+            <h3>合租与办公室</h3>
+            <p>买「好分、不黏手、不用洗很久」的：柑橘类、香蕉、苹果、独立盒莓。标注日期和归属，减少室友友好损耗。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- STUDENT -->
+    <section class="section student-section" id="student">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Campus Life</p>
+            <h2>大学生专区</h2>
+            <p class="section-desc">宿舍没冰箱？考试周只想快点补一口？预算有限也要吃对——按校园场景挑水果。</p>
+          </div>
+          <button class="btn-primary" id="btn-fruit-basket" type="button">生成本周宿舍果篮</button>
+        </div>
+
+        <div class="scenario-bar" id="scenario-bar" role="group" aria-label="校园场景"></div>
+        <p class="scenario-result" id="scenario-result"></p>
+
+        <div class="basket-panel" id="basket-panel" hidden>
+          <div class="basket-head">
+            <h3>本周宿舍果篮</h3>
+            <button class="btn-ghost sm" id="basket-close" type="button">收起</button>
+          </div>
+          <div class="basket-grid" id="basket-grid"></div>
+          <p class="basket-tip" id="basket-tip"></p>
+        </div>
+
+        <div class="fruit-grid student-grid" id="student-grid"></div>
+
+        <div class="campus-tips">
+          <article class="tip-card">
+            <span class="tip-num">宿舍</span>
+            <h3>没冰箱怎么存</h3>
+            <p>苹果、橙子、柚子、香蕉（未熟）阴凉通风即可。浆果和水蜜桃娇气，尽量当天吃。热带水果别塞冷藏，未熟会「冻伤」发黑。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">一人食</span>
+            <h3>一次买多少</h3>
+            <p>按「日均 1 个拳头体积」估算：一人一周约 8–12 个拳头份。葡萄/草莓买小盒，西瓜选切片或迷你瓜，避免吃不完浪费。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">省钱</span>
+            <h3>校内怎么买更省</h3>
+            <p>晚上超市打折、菜市场收摊前、同寝室拼整箱，通常更划算。当季本地果几乎总比「网红进口」便宜且好吃。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">考试周</span>
+            <h3>自习补给怎么选</h3>
+            <p>要稳定补能选香蕉、苹果、柑橘；盯屏幕久优先蓝莓、圣女果（也算水果用）、橙子。别用果汁和果脯替代整果，糖冲得快容易犯困。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">运动</span>
+            <h3>健身前后一口</h3>
+            <p>训练前 30–60 分钟来半根香蕉或几颗葡萄；力量日练后补上水果+酸奶/鸡蛋。牛油果适合正餐加，不适合当「随便吃」的零食。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">分享</span>
+            <h3>宿舍拼单清单</h3>
+            <p>适合整箱/整袋分享的：苹果、橙子、香蕉、葡萄、橘子。娇气果自己买小份即可。注明「谁买的谁先吃」，友情更长久。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section faq-section" id="faq">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Common Questions</p>
+            <h2>吃水果的常见问题</h2>
+            <p class="section-desc">几条高频疑问，尽量讲清楚。</p>
+          </div>
+        </div>
+        <div class="faq-list">
+          <details class="faq-item" open>
+            <summary>饭前吃还是饭后吃？</summary>
+            <p>不必太纠结。健康人群空腹吃大多数水果通常没问题；胃肠敏感可放在两餐之间。真正需要留意的是：一次别吃太多，以及特定疾病（如胃酸过多、控糖）请遵医嘱调整时机。</p>
+          </details>
+          <details class="faq-item">
+            <summary>果汁可以代替水果吗？</summary>
+            <p>不建议完全代替。打汁会损失部分膳食纤维，糖却吸收更快，也更容易喝多。想补充水分可以喝淡果汁，日常仍优先完整水果。</p>
+          </details>
+          <details class="faq-item">
+            <summary>「寒凉」「上火」的水果怎么理解？</summary>
+            <p>这是传统饮食经验里的体质描述，现代营养学更关注个人耐受、总量和季节。若你吃某类水果后不舒服，就减少或换品种，不必被「绝对禁忌」吓住。</p>
+          </details>
+          <details class="faq-item">
+            <summary>糖尿病 / 控糖能吃水果吗？</summary>
+            <p>多数情况可以，但要控制份量和种类，优先低 GI、完整水果，避开果汁与蜜饯，固定时间吃并监测血糖。具体方案请找医生或注册营养师，不要照搬网上的「绝对清单」。</p>
+          </details>
+          <details class="faq-item">
+            <summary>水果能代替蔬菜吗？</summary>
+            <p>不能。水果糖分通常更高，蔬菜则能提供更多多样纤维和微量元素。两者互补，不是互相替代。</p>
+          </details>
+          <details class="faq-item">
+            <summary>一天吃多少合适？</summary>
+            <p>对多数成年人，每日约 200–350 克新鲜水果是常见建议区间（大约 1–2 个拳头体积）。体重管理或控糖时可取下限，并分散到白天吃。</p>
+          </details>
+          <details class="faq-item">
+            <summary>生活费有限，怎么把水果吃够？</summary>
+            <p>优先当季本地、按「耐放 + 好分」搭配：苹果/橙子/柚子做主力，香蕉补能，浆果水蜜桃当小奖励。晚上打折、拼箱、买切片瓜，都比每天一杯果茶更划算也更健康。</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIPS -->
+    <section class="section tips-section" id="tips">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">How to Choose</p>
+            <h2>挑选与保存</h2>
+            <p class="section-desc">几条通用原则，买得准、放得住。</p>
+          </div>
+        </div>
+        <div class="tips-grid">
+          <article class="tip-card">
+            <span class="tip-num">01</span>
+            <h3>看果蒂与香气</h3>
+            <p>果蒂鲜绿、微微有该品种特有的清香，通常更新鲜。香气过浓或有酒味，可能已过熟。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">02</span>
+            <h3>手感比颜色更准</h3>
+            <p>颜色会骗人，弹性不会。轻按应有恰到好处的回弹；过软是熟过了，硬得像石头则还没到位。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">03</span>
+            <h3>先吃熟的，后吃硬的</h3>
+            <p>同一袋里先处理软熟果。香蕉、猕猴桃、芒果可室温催熟，熟后冷藏减缓继续变软。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">04</span>
+            <h3>浆果娇气，吃前再洗</h3>
+            <p>草莓、蓝莓、树莓沾水易霉。带回家先摊开通风，食用前再轻洗，吃多少洗多少。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">05</span>
+            <h3>热带水果怕冷</h3>
+            <p>香蕉、芒果、木瓜、牛油果未熟时别进冰箱，低温易发黑、风味变差；熟后再冷藏。</p>
+          </article>
+          <article class="tip-card">
+            <span class="tip-num">06</span>
+            <h3>切开尽快吃</h3>
+            <p>切开后维生素 C 会随时间流失。柠檬汁抹切面可减缓氧化变色，但仍建议当天吃完。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section closing-section">
+      <div class="container closing-card">
+        <div>
+          <p class="eyebrow">Eat with the Season</p>
+          <h2>顺着时令吃，风味与营养都在路上。</h2>
+          <p>把这一页收藏起来，买水果前先扫一眼；点卡片上的小红心收藏喜欢的果子，也可以用「随缘一颗」给自己一点小惊喜。</p>
+        </div>
+        <div class="closing-actions">
+          <button class="btn-primary" id="btn-random-2" type="button">随缘一颗</button>
+          <a class="btn-secondary" href="#top">回到顶部</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="logo-mark" aria-hidden="true"></span>
+        <div>
+          <strong>果序 · 时令水果志</strong>
+          <p>好水果，吃对时候。</p>
+        </div>
+      </div>
+      <p class="footer-note">内容为科普参考，不构成医疗建议。特殊体质、控糖或疾病饮食请遵医嘱。</p>
+    </div>
+  </footer>
+
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部">↑</button>
+
+  <!-- Modal -->
+  <div class="modal" id="fruit-modal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal-close" type="button" data-close-modal aria-label="关闭">×</button>
+      <div class="modal-hero" id="modal-hero">
+        <div class="modal-emoji" id="modal-emoji">🍎</div>
+        <div>
+          <p class="modal-seasons" id="modal-seasons"></p>
+          <h3 id="modal-title">水果</h3>
+          <p class="modal-en" id="modal-en"></p>
+        </div>
+        <button class="fav-btn" id="modal-fav" type="button" aria-label="收藏">♡</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-block">
+          <h4>主要功效</h4>
+          <ul id="modal-benefits" class="benefit-list"></ul>
+        </div>
+        <div class="modal-block">
+          <h4>什么时候吃最好</h4>
+          <p id="modal-season-text"></p>
+        </div>
+        <div class="modal-block">
+          <h4>怎么吃更好</h4>
+          <p id="modal-pairing"></p>
+        </div>
+        <div class="modal-block">
+          <h4>挑选与保存</h4>
+          <p id="modal-tips"></p>
+        </div>
+        <div class="modal-meta" id="modal-meta"></div>
+        <div class="modal-tags" id="modal-tags"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
