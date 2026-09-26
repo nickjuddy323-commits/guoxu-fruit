@@ -428,17 +428,33 @@
           <div>
             <p class="eyebrow">Fruit Atlas</p>
             <h2>水果图鉴</h2>
-            <p class="section-desc">点开卡片，看功效、最佳季节、糖分提示、热量、主产地/原产与挑选要点。点心形可收藏。国外原产会标「原产 ·」，中国原产不特殊标注。</p>
+            <p class="section-desc">点开卡片，看功效、季节、糖分、热量、主产地/原产、挑选要点与淘宝购买入口。可按季节与类别筛选。</p>
           </div>
           <div class="atlas-tools">
-            <div class="atlas-scope" id="atlas-scope" role="group" aria-label="图鉴范围">
-              <button type="button" data-scope="common" class="is-active">常见的</button>
-              <button type="button" data-scope="all">全部</button>
+            <div class="atlas-filters">
+              <div class="filter-row" id="atlas-season" role="group" aria-label="按季节">
+                <button type="button" data-season="all" class="is-active">全部季节</button>
+                <button type="button" data-season="spring">春</button>
+                <button type="button" data-season="summer">夏</button>
+                <button type="button" data-season="autumn">秋</button>
+                <button type="button" data-season="winter">冬</button>
+              </div>
+              <div class="filter-row" id="atlas-cat" role="group" aria-label="按类别">
+                <button type="button" data-cat="all" class="is-active">全部类</button>
+                <button type="button" data-cat="citrus">柑橘</button>
+                <button type="button" data-cat="berry">浆果</button>
+                <button type="button" data-cat="stone">核果</button>
+                <button type="button" data-cat="pome">仁果</button>
+                <button type="button" data-cat="melon">瓜果</button>
+                <button type="button" data-cat="tropical">热带</button>
+                <button type="button" data-cat="other">其他</button>
+              </div>
             </div>
             <div class="search-wrap">
-              <input id="search-input" type="search" placeholder="搜索水果名、功效关键词…" aria-label="搜索水果" />
+              <input id="search-input" type="search" placeholder="搜索水果名、功效、产地…" aria-label="搜索水果" />
             </div>
           </div>
+          <p class="atlas-count" id="atlas-count"></p>
         </div>
         <div class="fruit-grid" id="atlas-grid"></div>
         <p class="empty-state" id="atlas-empty" hidden>没有找到相关水果，换个关键词试试。</p>

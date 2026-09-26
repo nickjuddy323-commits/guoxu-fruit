@@ -1821,6 +1821,70 @@ function isForeignOrigin(origin) {
   return !String(origin || "").startsWith("中国");
 }
 
+
+const FRUIT_CATEGORY = {
+  apple: "pome", pear: "pome", "citrus-pomelo": "citrus", orange: "citrus", mandarin: "citrus",
+  kumquat: "citrus", lime: "citrus", lemon: "citrus", grapefruit: "citrus", "buddha-hand": "citrus",
+  citron: "citrus", "finger-lime": "citrus", pomelo: "citrus",
+  strawberry: "berry", blueberry: "berry", grape: "berry", raspberry: "berry", blackberry: "berry",
+  cranberry: "berry", bilberry: "berry", gooseberry: "berry", "black-currant": "berry",
+  "red-currant": "berry", mulberry: "berry", "haskap": "berry", honeyberry: "berry",
+  "miracle-eggplant-fruit": "berry", seabuckthorn: "berry", jabuticaba: "berry", acai: "berry",
+  peach: "stone", plum: "stone", "prune-plum": "stone", cherry: "stone", apricot: "stone",
+  mango: "stone", lychee: "stone", longan: "stone", olive: "stone", mume: "stone",
+  hawthorn: "pome", "tiger-nut-fruit": "pome", crabapple: "pome", quince: "pome", loquat: "pome",
+  watermelon: "melon", "hami-melon": "melon", muskmelon: "melon", "sheep-horn-melon": "melon",
+  honeydew: "melon", "horned-melon": "melon", pumpkin: "melon",
+  banana: "tropical", pineapple: "tropical", papaya: "tropical", coconut: "tropical",
+  durian: "tropical", jackfruit: "tropical", guava: "tropical", "wax-apple": "tropical",
+  starfruit: "tropical", rambutan: "tropical", "custard-apple": "tropical", "snake-fruit": "tropical",
+  passionfruit: "tropical", dragonfruit: "tropical", mangosteen: "tropical", plantain: "tropical",
+  avocado: "tropical", fig: "other", pomegranate: "other", kiwi: "other", persimmon: "other",
+  jujube: "other", "black-jujube": "other", datefruit: "other", "date-fruit": "other",
+  "cherry-tomato": "other", yacon: "other", "monk-fruit": "other", tamarind: "other",
+  amla: "other", acerola: "berry", "prickly-pear": "other", "rose-hip": "other",
+  feijoa: "other", "black-sapote": "other", "golden-fruit": "other", "sapodilla": "other",
+  "miracle-fruit": "other", wampee: "other", "roxburgh-rose": "other", "buddhas-tear": "other",
+  "longan-eye": "other", "mume": "stone", lemon: "citrus", berry: "berry",
+};
+
+function fruitCategory(fruit) {
+  return FRUIT_CATEGORY[fruit.id] || "other";
+}
+
+function regionLineHtml(id) {
+  const o = FRUIT_ORIGIN[id];
+  if (!o || !o.regions) return "";
+  return "主产地：" + o.regions;
+}
+
+function taobaoLink(name, q) {
+  return "https://s.taobao.com/search?q=" + encodeURIComponent(q || (name + " 新鲜 水果"));
+}
+
+function buyLinksHtml(fruit) {
+  const n = fruit.name;
+  const links = [
+    { label: "淘宝「" + n + "」", q: n + " 水果" },
+    { label: "淘宝 新鲜 " + n, q: n + " 新鲜 当季" },
+    { label: "淘宝 " + n + " 包邮", q: n + " 包邮" },
+  ];
+  return (
+    '<div class="buy-links">' +
+    links
+      .map(
+        (x) =>
+          '<a href="' +
+          taobaoLink(n, x.q) +
+          '" target="_blank" rel="noopener noreferrer">🛒 ' +
+          x.label +
+          "</a>"
+      )
+      .join("") +
+    "</div>"
+  );
+}
+
 function originBadgeHtml(id) {
   const o = FRUIT_ORIGIN[id];
   if (!o || !isForeignOrigin(o.origin)) return "";
@@ -1954,6 +2018,7 @@ function createFruitCard(fruit, { highlight = false, compact = false } = {}) {
       <span class="tag sugar">${SUGAR_LABEL[fruit.sugar] || ""}</span>
       ${originBadgeHtml(fruit.id)}
     </div>
+    <p class="fruit-region">${regionLineHtml(fruit.id)}</p>
   `;
 
   el.addEventListener("click", (e) => {
@@ -2002,14 +2067,16 @@ function openModal(id) {
     <span class="meta-pill">${SUGAR_LABEL[fruit.sugar] || ""}</span>
     <span class="meta-pill">应季：${fruit.seasons.map(seasonLabel).join(" / ")}</span>
   `;
-  document.getElementById("modal-tags").innerHTML = fruit.tags
-    .map((t) => {
-      const b = BENEFITS.find((x) => x.id === t);
-      return b
-        ? `<span class="tag"><span class="chip-icon" style="background:${b.icon}"></span>${b.label}</span>`
-        : "";
-    })
-    .join("");
+  document.getElementById("modal-tags").innerHTML =
+    buyLinksHtml(fruit) +
+    fruit.tags
+      .map((t) => {
+        const b = BENEFITS.find((x) => x.id === t);
+        return b
+          ? '<span class="tag"><span class="chip-icon" style="background:' + b.icon + '"></span>' + b.label + "</span>"
+          : "";
+      })
+      .join("");
 
   refreshFavoritesUI();
   modal.hidden = false;
@@ -2307,13 +2374,20 @@ const atlasGrid = document.getElementById("atlas-grid");
 const atlasEmpty = document.getElementById("atlas-empty");
 const searchInput = document.getElementById("search-input");
 
-let atlasScope = "common";
+let atlasSeason = "all";
+let atlasCat = "all";
 
 function renderAtlas(query = "") {
-  const q = query.trim().toLowerCase();
+  const q = (query || "").trim().toLowerCase();
+  const base = FRUITS.filter((f) => {
+    if (atlasSeason !== "all" && !(f.seasons || []).includes(atlasSeason)) return false;
+    if (atlasCat !== "all" && fruitCategory(f) !== atlasCat) return false;
+    return true;
+  });
   const list = !q
-    ? FRUITS
-    : FRUITS.filter((f) => {
+    ? base
+    : base.filter((f) => {
+        const o = FRUIT_ORIGIN[f.id] || {};
         const hay = [
           f.name,
           f.en,
@@ -2321,6 +2395,8 @@ function renderAtlas(query = "") {
           f.seasonText,
           f.tips,
           f.pairing,
+          o.origin,
+          o.regions,
           SUGAR_LABEL[f.sugar] || "",
           ...f.benefits,
           ...f.tags.map((t) => BENEFITS.find((b) => b.id === t)?.label || ""),
@@ -2333,29 +2409,35 @@ function renderAtlas(query = "") {
   atlasGrid.innerHTML = "";
   list.forEach((f) => atlasGrid.appendChild(createFruitCard(f)));
   atlasEmpty.hidden = list.length > 0;
+  updateAtlasCount(list.length);
 }
 
-function atlasCount(scope) {
-  return scope === "all" ? FRUITS.length : FRUITS.filter((f) => f.common !== false).length;
+function updateAtlasCount(n) {
+  const el = document.getElementById("atlas-count");
+  if (el) el.textContent = "共 " + n + " 种水果";
 }
 
-function renderAtlasScope() {
-  const bar = document.getElementById("atlas-scope");
-  if (!bar) return;
-  bar.querySelectorAll("button").forEach((btn) => {
-    btn.classList.toggle("is-active", btn.dataset.scope === atlasScope);
-    const label = btn.dataset.scope === "all" ? "全部" : "常见的";
-    btn.textContent = label + " " + atlasCount(btn.dataset.scope);
+function bindAtlasFilters() {
+  const seasonBar = document.getElementById("atlas-season");
+  const catBar = document.getElementById("atlas-cat");
+  seasonBar?.querySelectorAll("button").forEach((btn) => {
     btn.addEventListener("click", () => {
-      atlasScope = btn.dataset.scope;
-      renderAtlasScope();
-      renderAtlas(searchInput?.value || document.getElementById("search-input")?.value || "");
+      atlasSeason = btn.dataset.season;
+      seasonBar.querySelectorAll("button").forEach((b) => b.classList.toggle("is-active", b === btn));
+      renderAtlas(searchInput?.value || "");
+    });
+  });
+  catBar?.querySelectorAll("button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      atlasCat = btn.dataset.cat;
+      catBar.querySelectorAll("button").forEach((b) => b.classList.toggle("is-active", b === btn));
+      renderAtlas(searchInput?.value || "");
     });
   });
 }
 
 searchInput.addEventListener("input", (e) => renderAtlas(e.target.value));
-renderAtlasScope();
+bindAtlasFilters();
 
 function renderFavoritesPanel() {
   const panel = document.getElementById("favorites-panel");
@@ -3515,6 +3597,7 @@ renderOrbit();
 syncSeasonTab(activeSeason);
 renderBenefitFilter();
 renderBenefitGrid();
+bindAtlasFilters();
 renderAtlas();
 renderDaily();
 renderSugarFilter();

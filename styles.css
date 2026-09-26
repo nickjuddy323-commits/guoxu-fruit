@@ -2844,3 +2844,77 @@ a:focus:not(:focus-visible) {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Atlas filters */
+.atlas-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 220px;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.filter-row button {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-soft);
+  border-radius: 999px;
+  padding: 7px 12px;
+  cursor: pointer;
+  font-size: 0.84rem;
+  transition: all 0.16s ease;
+}
+
+.filter-row button:hover {
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.filter-row button.is-active {
+  background: var(--ink);
+  color: #fffaf3;
+  border-color: var(--ink);
+}
+
+.atlas-count {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.fruit-region {
+  margin: 8px 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.buy-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.buy-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(232, 90, 60, 0.1);
+  color: #b23f28;
+  border: 1px solid rgba(232, 90, 60, 0.2);
+  font-size: 0.86rem;
+  text-decoration: none;
+}
+
+.buy-links a:hover {
+  background: rgba(232, 90, 60, 0.18);
+}
