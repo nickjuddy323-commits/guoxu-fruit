@@ -35,15 +35,16 @@
 
       <nav class="nav" id="site-nav" aria-label="主导航">
         <a href="#today">今日</a>
+        <a href="#entries">入口</a>
         <a href="#elder">长辈</a>
         <a href="#younger">青年</a>
         <a href="#student">学生</a>
         <a href="#seasons">时令</a>
         <a href="#benefits">功效</a>
         <a href="#sugar">控糖</a>
+        <a href="#week">周果单</a>
         <a href="#compare">对比</a>
         <a href="#atlas">图鉴</a>
-        <a href="#tips">挑选</a>
       </nav>
 
       <div class="header-actions">
@@ -55,6 +56,9 @@
         <button class="btn-ghost" id="btn-favorites" type="button" title="查看收藏">
           收藏 <span id="fav-count">0</span>
         </button>
+        <div class="header-search">
+          <input id="header-search" type="search" placeholder="搜水果… ( / )" aria-label="搜索水果" />
+        </div>
         <button class="btn-ghost" id="btn-share" type="button" title="分享给朋友">分享</button>
         <button class="btn-primary sm" id="btn-random" type="button">随缘一颗</button>
       </div>
@@ -117,6 +121,150 @@
             </div>
             <button class="btn-secondary sm" id="btn-daily" type="button">看看详情</button>
           </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ENTRY MAP -->
+    <section class="section entries-section" id="entries">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Kitchen Map</p>
+            <h2>四个入口，一张桌面</h2>
+            <p class="section-desc">按季节、按功效、按人群，或直接转一转——少翻页，少纠结，打开就能查水果。</p>
+          </div>
+        </div>
+
+        <div class="entry-grid">
+          <a class="entry-card" href="#seasons">
+            <span class="entry-num">01 · 按时令</span>
+            <h3>现在吃什么？</h3>
+            <p>春夏秋冬轮着来，当季风味最足。转盘和月度推荐都会跟着变。</p>
+            <span class="entry-link">看四季时令 →</span>
+          </a>
+          <a class="entry-card" href="#benefits">
+            <span class="entry-num">02 · 按功效</span>
+            <h3>想补点什么？</h3>
+            <p>维 C、膳食纤维、护眼、抗氧化、补水……按你的需求缩小范围。</p>
+            <span class="entry-link">按功效筛选 →</span>
+          </a>
+          <a class="entry-card" href="#elder">
+            <span class="entry-num">03 · 按人群</span>
+            <h3>给谁挑？</h3>
+            <p>长辈牙口/服药、青年办公健身、学生宿舍省钱——场景化推荐。</p>
+            <span class="entry-link">选人群专区 →</span>
+          </a>
+          <a class="entry-card" href="#play">
+            <span class="entry-num">04 · 转一转</span>
+            <h3>选择困难？</h3>
+            <p>像开冰箱一样转一转：随便、当季、低糖、好打发——总有答案。</p>
+            <span class="entry-link">去转一转 →</span>
+          </a>
+        </div>
+
+        <div class="quick-entries">
+          <h3>快捷入口</h3>
+          <div class="quick-grid">
+            <a href="#today"><strong>本月应季</strong><span>跟着月历吃</span></a>
+            <a href="#week"><strong>本周果单</strong><span>排好七天</span></a>
+            <a href="#sugar"><strong>控糖</strong><span>糖分友好</span></a>
+            <a href="#compare"><strong>对比</strong><span>两颗谁更好</span></a>
+            <a href="#atlas"><strong>图鉴</strong><span>查一种水果</span></a>
+            <a href="#play"><strong>转一转</strong><span>随机惊喜</span></a>
+            <a href="#tips"><strong>挑选</strong><span>买得准</span></a>
+            <a href="#faq"><strong>问答</strong><span>常见疑惑</span></a>
+            <a href="#student"><strong>学生</strong><span>宿舍党</span></a>
+            <a href="#elder"><strong>长辈</strong><span>软好入口</span></a>
+          </div>
+        </div>
+
+        <div class="first-time">
+          <h3>第一次来？</h3>
+          <ol class="first-steps">
+            <li><strong>选入口</strong><span>季节、功效，还是给谁吃？先定你怎么找。</span></li>
+            <li><strong>缩小范围</strong><span>用搜索、标签或「本周果单」快速定位。</span></li>
+            <li><strong>排一周</strong><span>周果单只存在你的浏览器里，随时改。</span></li>
+            <li><strong>去买去吃</strong><span>看挑选提示下单，按份量吃就好。</span></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- PLAY / SPIN -->
+    <section class="section play-section" id="play">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Play Kitchen</p>
+            <h2>转一转 · 开果篮</h2>
+            <p class="section-desc">像「开冰箱」一样，选个模式转一下。不知道吃什么的时候用它。</p>
+          </div>
+        </div>
+
+        <div class="play-panel">
+          <div class="play-modes" id="play-modes" role="group" aria-label="转一转模式">
+            <button type="button" data-mode="any" class="is-active">随便</button>
+            <button type="button" data-mode="season">当季</button>
+            <button type="button" data-mode="low">低糖</button>
+            <button type="button" data-mode="easy">好打发</button>
+            <button type="button" data-mode="exam">补能提神</button>
+          </div>
+
+          <div class="play-stage">
+            <button class="play-wheel" id="play-wheel" type="button" aria-label="转一转">
+              <span class="play-face" id="play-face">？</span>
+              <span class="play-hint" id="play-hint">点我转一下</span>
+            </button>
+            <div class="play-result" id="play-result" hidden>
+              <div class="play-emoji" id="play-emoji">🍎</div>
+              <div>
+                <h3 id="play-name">苹果</h3>
+                <p id="play-brief"></p>
+                <div class="play-actions">
+                  <button class="btn-primary sm" id="play-detail" type="button">看详情</button>
+                  <button class="btn-secondary sm" id="play-again" type="button">再转一次</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WEEK PLAN -->
+    <section class="section week-section" id="week">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Meal Plan</p>
+            <h2>这周吃什么果？</h2>
+            <p class="section-desc">给周一到周日排好水果计划，数据只保存在你的浏览器里。</p>
+          </div>
+          <div class="week-actions">
+            <span class="week-count" id="week-count">已排 0/7 天</span>
+            <button class="btn-ghost sm" id="week-fill" type="button">随机填满</button>
+            <button class="btn-ghost sm" id="week-clear" type="button">清空本周</button>
+          </div>
+        </div>
+        <div class="week-grid" id="week-grid"></div>
+      </div>
+    </section>
+
+    <!-- DATA -->
+    <section class="section data-section" id="data">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Data</p>
+            <h2>现在能查到</h2>
+          </div>
+        </div>
+        <div class="data-strip" id="data-strip">
+          <div><strong id="data-fruits">—</strong><span>种水果</span></div>
+          <div><strong id="data-benefits">—</strong><span>类功效</span></div>
+          <div><strong id="data-scenarios">—</strong><span>个人群场景</span></div>
+          <div><strong id="data-season">—</strong><span>当前季节</span></div>
         </div>
       </div>
     </section>

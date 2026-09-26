@@ -1804,6 +1804,207 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+// ---------- header search ----------
+const headerSearch = document.getElementById("header-search");
+if (headerSearch && searchInput) {
+  headerSearch.addEventListener("input", () => {
+    searchInput.value = headerSearch.value;
+    renderAtlas(headerSearch.value);
+    if (headerSearch.value.trim()) {
+      document.getElementById("atlas")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+  searchInput.addEventListener("input", () => {
+    headerSearch.value = searchInput.value;
+  });
+}
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "/" && !e.metaKey && !e.ctrlKey && !e.altKey) {
+    const tag = (e.target && e.target.tagName) || "";
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+    e.preventDefault();
+    const box = document.querySelector(".header-search")?.offsetParent
+      ? headerSearch
+      : searchInput;
+    box?.focus();
+    document.getElementById("atlas")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+});
+
+// ---------- play wheel ----------
+let playMode = "any";
+let playFruit = null;
+const playModesEl = document.getElementById("play-modes");
+const playWheel = document.getElementById("play-wheel");
+const playFace = document.getElementById("play-face");
+const playHint = document.getElementById("play-hint");
+const playResult = document.getElementById("play-result");
+
+function playPool() {
+  switch (playMode) {
+    case "season":
+      return FRUITS.filter((f) => fruitInMonth(f, selectedMonth));
+    case "low":
+      return FRUITS.filter((f) => f.sugar === "low");
+    case "easy":
+      return FRUITS.filter((f) => fruitStudentTags(f).includes("noprep") || fruitStudentTags(f).includes("dorm"));
+    case "exam":
+      return FRUITS.filter((f) => f.tags.includes("energy") || f.tags.includes("vitc") || fruitStudentTags(f).includes("exam"));
+    default:
+      return FRUITS;
+  }
+}
+
+function spinPlay() {
+  const pool = playPool().length ? playPool() : FRUITS;
+  playFruit = pool[Math.floor(Math.random() * pool.length)];
+  playWheel.classList.remove("is-spin");
+  void playWheel.offsetWidth;
+  playWheel.classList.add("is-spin");
+  playHint.textContent = "转…";
+
+  // quick face shuffle
+  let ticks = 0;
+  const shuffle = setInterval(() => {
+    const f = FRUITS[Math.floor(Math.random() * FRUITS.length)];
+    playFace.textContent = f.emoji;
+    ticks += 1;
+    if (ticks > 10) {
+      clearInterval(shuffle);
+      playFace.textContent = playFruit.emoji;
+      playHint.textContent = "就决定是你了";
+      playResult.hidden = false;
+      document.getElementById("play-emoji").textContent = playFruit.emoji;
+      document.getElementById("play-name").textContent = playFruit.name;
+      document.getElementById("play-brief").textContent = playFruit.brief;
+      document.getElementById("play-detail").onclick = () => openModal(playFruit.id);
+    }
+  }, 70);
+}
+
+playModesEl?.querySelectorAll("button").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    playModesEl.querySelectorAll("button").forEach((b) => b.classList.remove("is-active"));
+    btn.classList.add("is-active");
+    playMode = btn.dataset.mode;
+  });
+});
+
+playWheel?.addEventListener("click", spinPlay);
+document.getElementById("play-again")?.addEventListener("click", spinPlay);
+
+// ---------- week fruit plan ----------
+const WEEK_KEY = "guoxu-week-plan";
+const WEEK_DAYS = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+
+function loadWeek() {
+  try {
+    const raw = localStorage.getItem(WEEK_KEY);
+    const arr = raw ? JSON.parse(raw) : [];
+    return Array.isArray(arr) ? arr : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveWeek(week) {
+  try {
+    localStorage.setItem(WEEK_KEY, JSON.stringify(week));
+  } catch {
+    /* ignore */
+  }
+}
+
+let weekPlan = loadWeek(); // array of 7: fruitId | null
+
+function renderWeek() {
+  const grid = document.getElementById("week-grid");
+  const countEl = document.getElementById("week-count");
+  if (!grid) return;
+
+  // today index Mon=0
+  const jsDay = new Date().getDay(); // 0 Sun
+  const todayIdx = (jsDay + 6) % 7;
+
+  let filled = 0;
+  grid.innerHTML = "";
+  WEEK_DAYS.forEach((label, i) => {
+    const fruitId = weekPlan[i];
+    const fruit = fruitId ? fruitById(fruitId) : null;
+    if (fruit) filled += 1;
+
+    const card = document.createElement("div");
+    card.className = "week-day" + (i === todayIdx ? " is-today" : "");
+    card.innerHTML = `<div class="d-label">${label}${i === todayIdx ? " · 今天" : ""}</div>`;
+
+    if (fruit) {
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "d-item";
+      item.innerHTML = `<span style="font-size:1.35rem">${fruit.emoji}</span><span><strong>${fruit.name}</strong></span>`;
+      item.addEventListener("click", () => openModal(fruit.id));
+      card.appendChild(item);
+      const clear = document.createElement("button");
+      clear.type = "button";
+      clear.className = "d-clear";
+      clear.textContent = "换一天内容 → 随机";
+      clear.addEventListener("click", () => {
+        weekPlan[i] = FRUITS[Math.floor(Math.random() * FRUITS.length)].id;
+        saveWeek(weekPlan);
+        renderWeek();
+      });
+      card.appendChild(clear);
+    } else {
+      const empty = document.createElement("button");
+      empty.type = "button";
+      empty.className = "d-empty";
+      empty.textContent = "+ 选水果";
+      empty.addEventListener("click", () => {
+        const pool = FRUITS.filter((f) => fruitInMonth(f, selectedMonth));
+        const src = pool.length ? pool : FRUITS;
+        weekPlan[i] = src[Math.floor(Math.random() * src.length)].id;
+        saveWeek(weekPlan);
+        renderWeek();
+      });
+      card.appendChild(empty);
+    }
+    grid.appendChild(card);
+  });
+
+  if (countEl) countEl.textContent = `已排 ${filled}/7 天`;
+}
+
+document.getElementById("week-fill")?.addEventListener("click", () => {
+  weekPlan = WEEK_DAYS.map(() => {
+    const pool = FRUITS.filter((f) => fruitInMonth(f, selectedMonth));
+    const src = pool.length ? pool : FRUITS;
+    return src[Math.floor(Math.random() * src.length)].id;
+  });
+  saveWeek(weekPlan);
+  renderWeek();
+  showToast("本周果单已随机填满");
+});
+
+document.getElementById("week-clear")?.addEventListener("click", () => {
+  weekPlan = Array(7).fill(null);
+  saveWeek(weekPlan);
+  renderWeek();
+  showToast("本周果单已清空");
+});
+
+// ---------- data strip ----------
+function renderDataStrip() {
+  const f = document.getElementById("data-fruits");
+  const b = document.getElementById("data-benefits");
+  const s = document.getElementById("data-scenarios");
+  const se = document.getElementById("data-season");
+  if (f) f.textContent = String(FRUITS.length);
+  if (b) b.textContent = String(BENEFITS.length);
+  if (s) s.textContent = String(STUDENT_SCENARIOS.length + ELDER_SCENARIOS.length + YOUNGER_SCENARIOS.length - 3);
+  if (se) se.textContent = SEASONS[seasonFromMonth(selectedMonth)]?.name || "—";
+}
+
 // ---------- random ----------
 function randomFruit() {
   const f = FRUITS[Math.floor(Math.random() * FRUITS.length)];
@@ -1917,6 +2118,8 @@ fillCompareSelects();
 renderCompare();
 renderScenarioBar();
 renderStudentGrid();
+renderWeek();
+renderDataStrip();
 makeScenarioSection({
   barId: "elder-bar",
   resultId: "elder-result",
