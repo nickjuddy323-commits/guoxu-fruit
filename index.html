@@ -37,7 +37,6 @@
         <a href="#today">今日</a>
         <a href="#entries">入口</a>
         <a href="#dietitian">营养师</a>
-        <a href="#wheel">转盘</a>
         <a href="#elder">长辈</a>
         <a href="#younger">青年</a>
         <a href="#student">学生</a>
@@ -317,67 +316,6 @@
         </div>
       </div>
     </section>
-
-    
-    <!-- TODAY WHEEL -->
-    <section class="section wheel-section" id="wheel">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Science Wheel</p>
-            <h2>今日食材转盘</h2>
-            <p class="section-desc">不是纯随机：按「时令优先 · 营养多样 · 糖分平衡 · 份量参考」加权抽取，再告诉你为什么选它。</p>
-          </div>
-          <button class="btn-primary" id="wheel-spin-btn" type="button">开始转动</button>
-        </div>
-
-        <div class="wheel-layout">
-          <div class="wheel-stage">
-            <canvas id="fruit-wheel" width="360" height="360" aria-label="今日食材转盘"></canvas>
-            <div class="wheel-pointer" aria-hidden="true"></div>
-            <div class="wheel-hub" id="wheel-hub">转</div>
-          </div>
-
-          <div class="wheel-side">
-            <div class="wheel-rules">
-              <h3>科学依据</h3>
-              <ol>
-                <li><strong>时令优先</strong>：当季果风味与营养通常更完整，权重更高。</li>
-                <li><strong>营养多样</strong>：近几天少出现的功效标签会加权，避免总吃同一种。</li>
-                <li><strong>糖分平衡</strong>：若最近偏好高糖果，会略抬低/中糖的权重。</li>
-                <li><strong>颜色多样</strong>：不同色系对应不同植物化学物，轮换更均衡。</li>
-                <li><strong>份量参考</strong>：成人日约 200–350 克水果，按人数给出建议克数。</li>
-              </ol>
-              <p class="wheel-disclaimer">规则参考常见膳食与营养学常识，不能代替医嘱；特殊疾病饮食请遵医嘱。</p>
-            </div>
-
-            <div class="wheel-result" id="wheel-result" hidden>
-              <div class="wheel-result-main">
-                <div class="wheel-result-img" id="wheel-result-img"></div>
-                <div>
-                  <p class="wheel-kicker">今日推荐</p>
-                  <h3 id="wheel-result-name">—</h3>
-                  <p id="wheel-result-brief"></p>
-                </div>
-              </div>
-              <div class="wheel-result-meta" id="wheel-result-meta"></div>
-              <div class="wheel-result-why" id="wheel-result-why"></div>
-              <div class="wheel-result-actions">
-                <button class="btn-primary sm" id="wheel-detail" type="button">看详情</button>
-                <button class="btn-secondary sm" id="wheel-spin-again" type="button">再转一次</button>
-                <button class="btn-secondary sm" id="wheel-accept" type="button">就定这个</button>
-              </div>
-            </div>
-
-            <div class="wheel-history" id="wheel-history">
-              <h3>今日已定</h3>
-              <p id="wheel-history-text">还没有锁定今天的水果。转一转，或进「营养师」生成完整菜单。</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- DATA -->
     <section class="section data-section" id="data">
       <div class="container">
