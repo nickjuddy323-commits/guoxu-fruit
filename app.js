@@ -671,6 +671,17 @@ function fruitInMonth(fruit, month) {
   return fruit.months.includes(month);
 }
 
+
+function fruitImgTag(fruit) {
+  return (
+    '<img class="fruit-img" src="assets/fruits/' +
+    fruit.id +
+    '.png" alt="' +
+    fruit.name +
+    '" loading="lazy" width="72" height="72" />'
+  );
+}
+
 function fruitById(id) {
   return FRUITS.find((f) => f.id === id);
 }
@@ -688,7 +699,7 @@ function createFruitCard(fruit, { highlight = false, compact = false } = {}) {
   el.innerHTML = `
     <button class="card-fav" type="button" data-id="${fruit.id}" aria-label="收藏">${isFavorite(fruit.id) ? "♥" : "♡"}</button>
     <div class="fruit-card-top">
-      <div class="fruit-emoji" aria-hidden="true">${fruit.emoji}</div>
+      <div class="fruit-emoji" aria-hidden="true">${fruitImgTag(fruit)}</div>
       <div>
         <h3 class="fruit-name">${fruit.name}</h3>
         <p class="fruit-en">${fruit.en}</p>
@@ -730,7 +741,7 @@ function openModal(id) {
   if (!fruit) return;
   activeFruitId = id;
 
-  document.getElementById("modal-emoji").textContent = fruit.emoji;
+  document.getElementById("modal-emoji").innerHTML = fruitImgTag(fruit);
   document.getElementById("modal-title").textContent = fruit.name;
   document.getElementById("modal-en").textContent = fruit.en;
   document.getElementById("modal-seasons").textContent =
@@ -868,7 +879,7 @@ function renderOrbit() {
     btn.style.animationDelay = `${i * 0.07}s, ${0.55 + i * 0.07}s`;
     btn.title = `${fruit.name} · 本月应季`;
     btn.setAttribute("aria-label", `查看${fruit.name}`);
-    btn.innerHTML = `<span class="orb-label">${fruit.name.slice(0, 1)}</span>`;
+    btn.innerHTML = fruitImgTag(fruit);
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       openModal(fruit.id);
@@ -1122,7 +1133,7 @@ function renderDaily() {
   const pool = inSeason.length ? inSeason : FRUITS;
   const fruit = pool[dayIndex % pool.length];
 
-  document.getElementById("daily-emoji").textContent = fruit.emoji;
+  document.getElementById("daily-emoji").innerHTML = fruitImgTag(fruit);
   document.getElementById("daily-name").textContent = fruit.name;
   document.getElementById("daily-brief").textContent = fruit.brief;
   document.getElementById("btn-daily").onclick = () => openModal(fruit.id);
@@ -1193,7 +1204,7 @@ function fillCompareSelects() {
   const sorted = FRUITS.slice().sort((a, b) => a.name.localeCompare(b.name, "zh"));
   [compareA, compareB].forEach((sel) => {
     sel.innerHTML = sorted
-      .map((f) => `<option value="${f.id}">${f.emoji} ${f.name}</option>`)
+      .map((f) => `<option value="${f.id}">${f.name}</option>`)
       .join("");
   });
   compareA.value = "orange";
@@ -1237,8 +1248,8 @@ function renderCompare() {
     compareB.value = b.id;
   }
 
-  document.getElementById("compare-a-title").innerHTML = `<span class="compare-emoji">${a.emoji}</span>${a.name}`;
-  document.getElementById("compare-b-title").innerHTML = `<span class="compare-emoji">${b.emoji}</span>${b.name}`;
+  document.getElementById("compare-a-title").innerHTML = fruitImgTag(a) + a.name;
+  document.getElementById("compare-b-title").innerHTML = fruitImgTag(b) + b.name;
 
   const rows = [
     ["英文", a.en, b.en],
@@ -1683,7 +1694,7 @@ function generateBasket() {
     item.type = "button";
     item.className = "basket-item";
     item.innerHTML = `
-      <div class="b-emoji">${f.emoji}</div>
+      <div class="b-emoji">${fruitImgTag(f)}</div>
       <h4>${f.name}</h4>
       <p>${STUDENT_TIPS[fruitStudentTags(f)[0]] || f.brief}</p>
     `;
@@ -1872,10 +1883,10 @@ function spinPlay() {
     ticks += 1;
     if (ticks > 10) {
       clearInterval(shuffle);
-      playFace.textContent = playFruit.emoji;
+      playFace.innerHTML = fruitImgTag(playFruit);
       playHint.textContent = "就决定是你了";
       playResult.hidden = false;
-      document.getElementById("play-emoji").textContent = playFruit.emoji;
+      document.getElementById("play-emoji").innerHTML = fruitImgTag(playFruit);
       document.getElementById("play-name").textContent = playFruit.name;
       document.getElementById("play-brief").textContent = playFruit.brief;
       document.getElementById("play-detail").onclick = () => openModal(playFruit.id);
@@ -1942,7 +1953,7 @@ function renderWeek() {
       const item = document.createElement("button");
       item.type = "button";
       item.className = "d-item";
-      item.innerHTML = `<span style="font-size:1.35rem">${fruit.emoji}</span><span><strong>${fruit.name}</strong></span>`;
+      item.innerHTML = fruitImgTag(fruit) + `<span><strong>${fruit.name}</strong></span>`;
       item.addEventListener("click", () => openModal(fruit.id));
       card.appendChild(item);
       const clear = document.createElement("button");
