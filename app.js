@@ -586,6 +586,53 @@ const FRUITS = [
   },
 ];
 
+
+// 原产国/地区与国内主产地
+const FRUIT_ORIGIN = {
+  apple: { origin: "中亚（天山一带）", regions: "新疆、陕西、山东、甘肃、河南" },
+  banana: { origin: "东南亚（马来群岛）", regions: "海南、广东、广西、云南、福建" },
+  orange: { origin: "中国南方", regions: "江西、湖南、四川、广西、湖北、重庆" },
+  strawberry: { origin: "美洲", regions: "辽宁、山东、江苏、安徽、河北、北京" },
+  blueberry: { origin: "北美洲", regions: "辽宁、吉林、山东、贵州、云南、江苏" },
+  grape: { origin: "西亚—黑海沿岸", regions: "新疆、宁夏、河北、山东、云南、甘肃" },
+  watermelon: { origin: "非洲南部", regions: "宁夏、新疆、甘肃、山东、江苏、内蒙古" },
+  peach: { origin: "中国", regions: "山东、河北、湖北、陕西、北京、浙江" },
+  mango: { origin: "南亚（印度—缅甸）", regions: "海南、广西、云南、四川、广东、台湾" },
+  kiwi: { origin: "中国（长江流域）", regions: "陕西、四川、湖北、贵州、湖南、河南" },
+  pear: { origin: "中国", regions: "河北、山东、新疆、安徽、辽宁、四川" },
+  "citrus-pomelo": { origin: "中国南方", regions: "福建、广西、重庆、广东、浙江、四川" },
+  pomegranate: { origin: "伊朗—中亚", regions: "四川、云南、陕西、安徽、河南、新疆" },
+  pineapple: { origin: "南美洲", regions: "海南、广东、广西、云南、福建" },
+  cherry: { origin: "西亚—小亚细亚", regions: "山东、辽宁、河北、河南、山西、陕西" },
+  dragonfruit: { origin: "中美洲", regions: "广西、广东、海南、福建、云南、台湾" },
+  durian: { origin: "东南亚", regions: "海南、广东、云南（少量）" },
+  lychee: { origin: "中国南方", regions: "广东、广西、福建、海南、四川、云南" },
+  longan: { origin: "中国南方", regions: "福建、广东、广西、台湾、云南、四川" },
+  persimmon: { origin: "中国", regions: "陕西、河南、河北、山西、广西、湖北" },
+  grapefruit: { origin: "加勒比海地区", regions: "四川、重庆、广东、湖南、浙江" },
+  avocado: { origin: "中美洲", regions: "云南、四川、广西、广东、海南" },
+  lemon: { origin: "南亚—缅甸一带", regions: "四川、云南、广东、重庆、海南" },
+  apricot: { origin: "中国西北—中亚", regions: "新疆、甘肃、陕西、河北、河南、山西" },
+  loquat: { origin: "中国东南", regions: "浙江、福建、江苏、四川、安徽、湖南" },
+  bayberry: { origin: "中国南方", regions: "浙江、江苏、福建、湖南、贵州、广西" },
+  passionfruit: { origin: "南美洲", regions: "台湾、福建、广东、广西、云南、海南" },
+  mangosteen: { origin: "东南亚", regions: "海南、广东、云南、台湾（少量）" },
+  fig: { origin: "西亚—地中海沿岸", regions: "新疆、山东、陕西、河南、福建" },
+  mulberry: { origin: "中国", regions: "江苏、浙江、山东、四川、新疆、湖北" },
+  jujube: { origin: "中国", regions: "新疆、河北、山东、山西、河南、陕西" },
+  papaya: { origin: "中美洲", regions: "海南、广东、广西、云南、福建" },
+};
+
+function isForeignOrigin(origin) {
+  return !String(origin || "").startsWith("中国");
+}
+
+function originBadgeHtml(id) {
+  const o = FRUIT_ORIGIN[id];
+  if (!o || !isForeignOrigin(o.origin)) return "";
+  return '<span class="tag origin-tag">原产 ' + o.origin + "</span>";
+}
+
 const SUGAR_LABEL = {
   low: "糖分偏低",
   mid: "糖分中等",
@@ -630,6 +677,7 @@ function toggleFavorite(id) {
 }
 
 function refreshFavoritesUI() {
+  setTimeout(() => { if (typeof renderDataStrip === 'function') renderDataStrip(); }, 0);
   const countEl = document.getElementById("fav-count");
   if (countEl) countEl.textContent = String(favorites.length);
 
@@ -710,6 +758,7 @@ function createFruitCard(fruit, { highlight = false, compact = false } = {}) {
       <span class="tag season">${fruit.seasons.map(seasonLabel).join(" · ")}</span>
       ${compact ? "" : `<span class="tag cal">${fruit.calories}</span>`}
       <span class="tag sugar">${SUGAR_LABEL[fruit.sugar] || ""}</span>
+      ${originBadgeHtml(fruit.id)}
     </div>
   `;
 
@@ -929,7 +978,7 @@ function renderMonthPicker() {
 
 function renderToday() {
   coreMonth.textContent = monthName(selectedMonth);
-  const list = FRUITS.filter((f) => fruitInMonth(f, selectedMonth)).slice(0, 6);
+  const list = FRUITS.filter((f) => fruitInMonth(f, selectedMonth)).slice(0, 8);
   todayGrid.innerHTML = "";
   if (!list.length) {
     todayGrid.innerHTML = `<p class="empty-state">这个月暂时没有推荐，换个季节看看。</p>`;
@@ -1930,6 +1979,7 @@ function saveWeek(week) {
 let weekPlan = loadWeek(); // array of 7: fruitId | null
 
 function renderWeek() {
+  setTimeout(() => { if (typeof renderDataStrip === 'function') renderDataStrip(); }, 0);
   const grid = document.getElementById("week-grid");
   const countEl = document.getElementById("week-count");
   if (!grid) return;
@@ -2006,17 +2056,143 @@ document.getElementById("week-clear")?.addEventListener("click", () => {
 
 // ---------- data strip ----------
 function renderDataStrip() {
-  const f = document.getElementById("data-fruits");
-  const b = document.getElementById("data-benefits");
-  const s = document.getElementById("data-scenarios");
-  const se = document.getElementById("data-season");
-  if (f) f.textContent = String(FRUITS.length);
-  if (b) b.textContent = String(BENEFITS.length);
-  if (s) s.textContent = String(STUDENT_SCENARIOS.length + ELDER_SCENARIOS.length + YOUNGER_SCENARIOS.length - 3);
-  if (se) se.textContent = SEASONS[seasonFromMonth(selectedMonth)]?.name || "—";
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  };
+  set("data-fruits", String(FRUITS.length));
+  set("data-benefits", String(BENEFITS.length));
+  set("data-scenarios", String(STUDENT_SCENARIOS.length + ELDER_SCENARIOS.length + YOUNGER_SCENARIOS.length - 3));
+  set("data-season", SEASONS[seasonFromMonth(selectedMonth)]?.name || "—");
+  set("data-peak", String(FRUITS.filter((f) => fruitInMonth(f, selectedMonth)).length) + " 种");
+  set("data-foreign", String(FRUITS.filter((f) => isForeignOrigin((FRUIT_ORIGIN[f.id] || {}).origin)).length) + " 种");
+  set("data-fav", String(favorites.length));
+  const weekFilled = (weekPlan || []).filter(Boolean).length;
+  set("data-week", weekFilled + "/7");
 }
 
+
+// ---------- dietitian ----------
+function dietPortionBase(people, goal) {
+  const peopleNum = Number(people) || 1;
+  let per = 220;
+  if (goal === "low") per = 150;
+  if (goal === "energy") per = 280;
+  if (goal === "skin") per = 220;
+  if (goal === "digest") per = 180;
+  if (goal === "soft") per = 180;
+  return Math.round(per * peopleNum);
+}
+
+function dietPool(goal) {
+  let list = FRUITS.filter((f) => fruitInMonth(f, selectedMonth));
+  if (!list.length) list = FRUITS.slice();
+  if (goal === "low") list = FRUITS.filter((f) => f.sugar === "low").concat(list.filter((f) => f.sugar === "mid"));
+  if (goal === "energy") list = FRUITS.filter((f) => f.tags.includes("energy") || fruitStudentTags(f).includes("gym")).concat(list);
+  if (goal === "skin") list = FRUITS.filter((f) => f.tags.includes("antiox") || f.tags.includes("vitc") || f.tags.includes("eye")).concat(list);
+  if (goal === "digest") list = FRUITS.filter((f) => f.tags.includes("digest") || f.tags.includes("fiber")).concat(list);
+  if (goal === "soft") list = FRUITS.filter((f) => fruitStudentTags(f).includes("soft") || f.tags.includes("digest")).concat(list);
+  const seen = new Set();
+  return list.filter((f) => { if (seen.has(f.id)) return false; seen.add(f.id); return true; });
+}
+
+function similarFruit(fruit, excludeIds) {
+  const score = (f) => {
+    let s = 0;
+    if (f.sugar === fruit.sugar) s += 3;
+    fruit.tags.forEach((t) => { if (f.tags.includes(t)) s += 2; });
+    f.seasons.forEach((t) => { if (fruit.seasons.includes(t)) s += 1; });
+    if (fruitInMonth(f, selectedMonth)) s += 2;
+    return s;
+  };
+  return FRUITS.filter((f) => f.id !== fruit.id && !excludeIds.has(f.id))
+    .map((f) => ({ f, s: score(f) }))
+    .sort((a, b) => b.s - a.s)[0]?.f;
+}
+
+function buildDietPlan() {
+  const people = document.getElementById('diet-people')?.value || '1';
+  const goal = document.getElementById('diet-goal')?.value || 'balance';
+  const hasRaw = document.getElementById('diet-has')?.value || '';
+  const wantSub = document.getElementById('diet-sub')?.value !== 'off';
+  const hasList = hasRaw.split(/[，,、\s]+/).map((s) => s.trim()).filter(Boolean);
+  const totalG = dietPortionBase(people, goal);
+  const peopleNum = Number(people) || 1;
+  const owned = [];
+  hasList.forEach((name) => {
+    const hit = FRUITS.find((f) => f.name === name || f.en.toLowerCase().includes(name.toLowerCase()) || f.name.includes(name));
+    if (hit && !owned.find((o) => o.id === hit.id)) owned.push(hit);
+  });
+  const pool = dietPool(goal);
+  const picks = [];
+  const used = new Set(owned.map((o) => o.id));
+  owned.forEach((f) => { if (picks.length < 3) { picks.push({ fruit: f, source: 'has' }); used.add(f.id); } });
+  while (picks.length < 3) {
+    const cand = pool.find((f) => !used.has(f.id));
+    if (!cand) break;
+    picks.push({ fruit: cand, source: 'pick' });
+    used.add(cand.id);
+  }
+  while (picks.length < 2) {
+    const cand = FRUITS.find((f) => !used.has(f.id));
+    if (!cand) break;
+    picks.push({ fruit: cand, source: 'pick' });
+    used.add(cand.id);
+  }
+  const weights = picks.map((p) => (p.fruit.sugar === 'high' ? 0.22 : p.fruit.sugar === 'low' ? 0.38 : 0.3));
+  const wsum = weights.reduce((a, b) => a + b, 0) || 1;
+  const portions = picks.map((p, i) => Math.max(60, Math.round((totalG * weights[i]) / wsum / 10) * 10));
+  const sumG = portions.reduce((a, b) => a + b, 0);
+  const goalLabel = { balance: '均衡多样', low: '控糖 / 减糖', energy: '补能 / 运动', skin: '气色 / 抗氧化', digest: '好消化', soft: '牙口友好' }[goal];
+  const summary = peopleNum === 1
+    ? `为 1 人准备约 ${sumG} 克水果（${goalLabel}）。建议分 1–2 次吃完，两餐之间很合适。`
+    : `为 ${people} 人准备约 ${sumG} 克水果（${goalLabel}），人均约 ${Math.round(sumG / peopleNum)} 克。可洗好装盒分享。`;
+  const sumEl = document.getElementById('diet-summary-text');
+  if (sumEl) sumEl.textContent = summary;
+  const listEl = document.getElementById('diet-list');
+  if (!listEl) return;
+  listEl.innerHTML = '';
+  picks.forEach((p, i) => {
+    const f = p.fruit;
+    const g = portions[i];
+    const note = p.source === 'has' ? '手边有，优先安排。' : goal === 'low' ? '糖分相对友好。' : goal === 'energy' ? '适合运动前后补糖原。' : goal === 'skin' ? '维 C / 抗氧化相关。' : goal === 'soft' ? '口感偏软，好入口。' : '当季推荐，风味在线。';
+    const row = document.createElement('div');
+    row.className = 'diet-item';
+    row.style.cursor = 'pointer';
+    row.innerHTML =
+      '<div class="d-img">' + fruitImgTag(f) + '</div>' +
+      '<div><h4>' + f.name + (p.source === 'has' ? ' · 已有' : '') + '</h4><p>' + note + ' ' +
+      ((FRUIT_ORIGIN[f.id] || {}).regions || '').split('、')[0] + '一带常见。</p></div>' +
+      '<div class="d-portion"><strong>' + g + '克</strong><span>约 ' + Math.max(1, Math.round(g / 120)) + ' 个中等份</span></div>';
+    row.addEventListener('click', () => openModal(f.id));
+    listEl.appendChild(row);
+  });
+  const swapBox = document.getElementById('diet-swap-box');
+  const swapEl = document.getElementById('diet-swaps');
+  if (!swapBox || !swapEl) return;
+  if (!wantSub) { swapBox.hidden = true; return; }
+  const swaps = [];
+  const exclude = new Set(picks.map((p) => p.fruit.id));
+  picks.forEach((p) => {
+    const alt = similarFruit(p.fruit, exclude);
+    if (!alt) return;
+    exclude.add(alt.id);
+    swaps.push('买不到「' + p.fruit.name + '」→ 可换 <strong>' + alt.name + '</strong>（' + SUGAR_LABEL[alt.sugar] + '）。主产地：' + ((FRUIT_ORIGIN[alt.id] || {}).regions || '') + '。');
+  });
+  swaps.push('若附近只有橙/橘，可替代维 C 类水果；只有苹果/梨，可替代耐放嚼感类；只有香蕉，可当快速补能担当。');
+  swaps.push('冷冻蓝莓、冻芒果、无添加冻莓可当草莓/蓝莓/芒果的应急平替；口感略软，营养保留通常不错。');
+  swapEl.innerHTML = swaps.map((s) => '<div class="diet-swap">' + s + '</div>').join('');
+  swapBox.hidden = false;
+}
+
+document.getElementById('diet-apply')?.addEventListener('click', buildDietPlan);
+document.getElementById('diet-refresh')?.addEventListener('click', () => {
+  buildDietPlan();
+  showToast('已换一份今日建议');
+});
+
 // ---------- random ----------
+
 function randomFruit() {
   const f = FRUITS[Math.floor(Math.random() * FRUITS.length)];
   openModal(f.id);
