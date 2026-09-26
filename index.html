@@ -431,8 +431,14 @@
             <h2>水果图鉴</h2>
             <p class="section-desc">点开卡片，看功效、最佳季节、糖分提示、热量、主产地/原产与挑选要点。点心形可收藏。国外原产会标「原产 ·」，中国原产不特殊标注。</p>
           </div>
-          <div class="search-wrap">
-            <input id="search-input" type="search" placeholder="搜索水果名、功效关键词…" aria-label="搜索水果" />
+          <div class="atlas-tools">
+            <div class="atlas-scope" id="atlas-scope" role="group" aria-label="图鉴范围">
+              <button type="button" data-scope="common" class="is-active">常见的</button>
+              <button type="button" data-scope="all">全部</button>
+            </div>
+            <div class="search-wrap">
+              <input id="search-input" type="search" placeholder="搜索水果名、功效关键词…" aria-label="搜索水果" />
+            </div>
           </div>
         </div>
         <div class="fruit-grid" id="atlas-grid"></div>
