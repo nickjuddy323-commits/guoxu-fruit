@@ -1701,6 +1701,109 @@ document.getElementById("basket-close").addEventListener("click", () => {
   document.getElementById("basket-panel").hidden = true;
 });
 
+// ---------- share / print / toast ----------
+const SITE_URL = "https://nickjuddy323-commits.github.io/guoxu-fruit/";
+
+function showToast(msg) {
+  const el = document.getElementById("toast");
+  if (!el) return;
+  el.textContent = msg;
+  el.hidden = false;
+  requestAnimationFrame(() => el.classList.add("is-show"));
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => {
+    el.classList.remove("is-show");
+    setTimeout(() => {
+      el.hidden = true;
+    }, 250);
+  }, 2200);
+}
+
+function openShare() {
+  const modal = document.getElementById("share-modal");
+  const urlEl = document.getElementById("share-url");
+  const qr = document.getElementById("qr-img");
+  const url = location.href.startsWith("http") ? location.href : SITE_URL;
+  if (urlEl) urlEl.textContent = url;
+  if (qr && !qr.src) {
+    qr.src =
+      "https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=8&data=" +
+      encodeURIComponent(url);
+    qr.onerror = () => {
+      qr.style.display = "none";
+    };
+  }
+  modal.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+
+function closeShare() {
+  const modal = document.getElementById("share-modal");
+  modal.hidden = true;
+  document.body.style.overflow = "";
+}
+
+async function copyLink() {
+  const url = location.href.startsWith("http") ? location.href : SITE_URL;
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(url);
+    } else {
+      const ta = document.createElement("textarea");
+      ta.value = url;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+    }
+    showToast("链接已复制，去粘贴给朋友吧");
+  } catch {
+    showToast("复制失败，请手动复制链接");
+  }
+}
+
+function nativeShare() {
+  const url = location.href.startsWith("http") ? location.href : SITE_URL;
+  const data = {
+    title: "果序 · 时令水果志",
+    text: "水果功效、当季怎么吃、控糖与长辈/青年/学生场景，一页就能查。",
+    url,
+  };
+  if (navigator.share) {
+    navigator.share(data).catch(() => {});
+  } else {
+    copyLink();
+    showToast("已复制链接，可粘贴到微信/QQ");
+  }
+}
+
+function doPrint() {
+  window.print();
+}
+
+document.getElementById("btn-share").addEventListener("click", openShare);
+document.getElementById("btn-share-2").addEventListener("click", openShare);
+document.getElementById("btn-copy-link").addEventListener("click", copyLink);
+document.getElementById("btn-native-share").addEventListener("click", nativeShare);
+document.getElementById("btn-print").addEventListener("click", doPrint);
+document.getElementById("btn-print-2").addEventListener("click", () => {
+  closeShare();
+  setTimeout(doPrint, 80);
+});
+
+document.getElementById("share-modal").addEventListener("click", (e) => {
+  if (e.target.matches("[data-close-share]")) closeShare();
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    const share = document.getElementById("share-modal");
+    if (share && !share.hidden) closeShare();
+  }
+});
+
 // ---------- random ----------
 function randomFruit() {
   const f = FRUITS[Math.floor(Math.random() * FRUITS.length)];

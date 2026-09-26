@@ -4,8 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>果序 · 时令水果志</title>
-  <meta name="description" content="水果有什么功效、什么时候最好吃——面向大学生的时令水果指南：宿舍存放、考试周补给、省钱挑果。" />
+  <meta name="description" content="水果有什么功效、什么时候最好吃——时令水果指南：功效、季节、控糖、长辈/青年/学生专区、水果对比。" />
   <meta name="theme-color" content="#f6f0e6" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23e85a3c'/%3E%3Ccircle cx='22' cy='24' r='8' fill='%23ffd2c4' opacity='.55'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-size='22' fill='%23fffaf3' font-family='serif'%3E果%3C/text%3E%3C/svg%3E" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="果序 · 时令水果志" />
+  <meta property="og:description" content="水果功效、当季怎么吃、控糖与长辈/青年/学生场景，一页就能查。" />
+  <meta property="og:url" content="https://nickjuddy323-commits.github.io/guoxu-fruit/" />
+  <meta property="og:site_name" content="果序" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="果序 · 时令水果志" />
+  <meta name="twitter:description" content="水果功效、当季怎么吃、控糖与场景指南。" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -46,6 +55,7 @@
         <button class="btn-ghost" id="btn-favorites" type="button" title="查看收藏">
           收藏 <span id="fav-count">0</span>
         </button>
+        <button class="btn-ghost" id="btn-share" type="button" title="分享给朋友">分享</button>
         <button class="btn-primary sm" id="btn-random" type="button">随缘一颗</button>
       </div>
     </div>
@@ -550,7 +560,9 @@
           <p>把这一页收藏起来，买水果前先扫一眼；点卡片上的小红心收藏喜欢的果子，也可以用「随缘一颗」给自己一点小惊喜。</p>
         </div>
         <div class="closing-actions">
-          <button class="btn-primary" id="btn-random-2" type="button">随缘一颗</button>
+          <button class="btn-primary" id="btn-share-2" type="button">分享给朋友</button>
+          <button class="btn-secondary" id="btn-random-2" type="button">随缘一颗</button>
+          <button class="btn-secondary" id="btn-print" type="button">打印一页</button>
           <a class="btn-secondary" href="#top">回到顶部</a>
         </div>
       </div>
@@ -571,6 +583,39 @@
   </footer>
 
   <button class="to-top" id="to-top" type="button" aria-label="回到顶部">↑</button>
+
+  <div class="toast" id="toast" hidden>已复制链接</div>
+
+  <!-- Share sheet -->
+  <div class="modal" id="share-modal" hidden>
+    <div class="modal-backdrop" data-close-share></div>
+    <div class="modal-card share-card" role="dialog" aria-modal="true" aria-labelledby="share-title">
+      <button class="modal-close" type="button" data-close-share aria-label="关闭">×</button>
+      <div class="modal-hero">
+        <div class="modal-emoji">🔗</div>
+        <div>
+          <p class="modal-seasons">Share</p>
+          <h3 id="share-title">分享给朋友</h3>
+          <p class="modal-en">把果序时令水果志发给需要的人</p>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="share-url" id="share-url">https://nickjuddy323-commits.github.io/guoxu-fruit/</div>
+        <div class="share-actions">
+          <button class="btn-primary" id="btn-copy-link" type="button">复制链接</button>
+          <button class="btn-secondary" id="btn-native-share" type="button">系统分享</button>
+          <button class="btn-secondary" id="btn-print-2" type="button">打印/导出PDF</button>
+        </div>
+        <div class="share-tips">
+          <p>微信 / QQ 可直接粘贴链接；也可「打印 / 导出 PDF」后发文件。手机打开后点「添加到主屏幕」更方便。</p>
+        </div>
+        <div class="share-qr">
+          <img id="qr-img" width="160" height="160" alt="网站二维码" />
+          <p>用手机相机扫码打开；打不开就先复制链接发给朋友。</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal -->
   <div class="modal" id="fruit-modal" hidden>
@@ -609,6 +654,16 @@
     </div>
   </div>
 
+  <script>
+    (function () {
+      var m = new Date().getMonth() + 1;
+      var el = document.getElementById("core-month");
+      if (el) el.textContent = m + "月";
+      var s = m >= 3 && m <= 5 ? "spring" : m >= 6 && m <= 8 ? "summer" : m >= 9 && m <= 11 ? "autumn" : "winter";
+      document.documentElement.dataset.season = s;
+      document.body && document.body.setAttribute("data-season", s);
+    })();
+  </script>
   <script src="app.js"></script>
 </body>
 </html>
